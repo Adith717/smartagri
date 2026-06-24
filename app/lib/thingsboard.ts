@@ -1,7 +1,10 @@
 export interface DeviceMap {
-  zone1: string;
-  zone2: string;
-  zone3: string;
+  zone1a: string;
+  zone1b: string;
+  zone2a: string;
+  zone2b: string;
+  zone3a: string;
+  zone3b: string;
 }
 
 export interface ThingsBoardConfig {

@@ -22,7 +22,7 @@ export interface Zone1BTelemetry {
 export interface Zone2ATelemetry {
   temperature: number;
   humidity: number;
-  rfidScans: Array<{ uid: string; ts: number }>;
+  lastRFID: string;
   buzzerActive: boolean;
   led1Alert: boolean;
   led2Alert: boolean;
@@ -109,7 +109,7 @@ export const initialMockTelemetry: DashboardTelemetry = {
   zone2a: {
     temperature: 24,
     humidity: 58,
-    rfidScans: [{ uid: 'RFID-001', ts: now - 3600000 }],
+    lastRFID: 'RFID-001',
     buzzerActive: false,
     led1Alert: false,
     led2Alert: false,
@@ -201,7 +201,7 @@ export function createMockTelemetry(previous: DashboardTelemetry): DashboardTele
     zone1b: {
       ...previous.zone1b,
       rainLevel: Number(nextRainLevel.toFixed(0)),
-      roofOpen: !shouldOpenRoof,
+      roofOpen: shouldOpenRoof,
       roofServoAngle: shouldOpenRoof ? 90 : 0,
     },
     zone2a: {
