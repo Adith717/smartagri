@@ -1,44 +1,64 @@
-export interface DeviceMap {
-  zone1a: string;
-  zone1b: string;
-  zone2a: string;
-  zone2b: string;
-  zone3a: string;
-  zone3b: string;
-}
-
-export interface Zone1Telemetry {
-  soil: number;
+export interface Zone1ATelemetry {
   temperature: number;
   humidity: number;
-  canopyOpen: boolean;
-  rainDetected: boolean;
-  pumpOn: boolean;
-  history: Array<{ time: number; soil: number; temperature: number; humidity: number }>;
+  soilMoisture: number;
+  pumpSpeed: number;
+  pumpActive: boolean;
+  redAlert: boolean;
+  greenIdleActive: boolean;
+  blueIrrigationActive: boolean;
+  online: boolean;
 }
 
-export interface Zone2Telemetry {
-  waterLevel: number;
+export interface Zone1BTelemetry {
+  touchDetected: boolean;
+  pirMotionDetected: boolean;
+  rainLevel: number;
+  roofServoAngle: number;
+  roofOpen: boolean;
+  online: boolean;
+}
+
+export interface Zone2ATelemetry {
+  temperature: number;
+  humidity: number;
+  rfidScans: Array<{ uid: string; ts: number }>;
+  buzzerActive: boolean;
+  led1Alert: boolean;
+  led2Alert: boolean;
+  rtcTime: string;
+  online: boolean;
+}
+
+export interface Zone2BTelemetry {
+  waterTroughLevel: number;
   feedWeight: number;
-  temperature: number;
-  humidity: number;
   lux: number;
-  servoAngle: number;
   fanSpeed: number;
-  lightsOn: boolean;
-  attendance: Array<{ uid: string; ts: number }>;
-  history: Array<{ time: number; waterLevel: number; feedWeight: number; temperature: number; humidity: number }>;
+  autoLightingActive: boolean;
+  feedServoAngle: number;
+  feedDispensed: boolean;
+  online: boolean;
 }
 
-export interface Zone3Telemetry {
-  solarVoltage: number;
-  solarCurrent: number;
-  energyGenerated: number;
+export interface Zone3ATelemetry {
+  waterLevel: number;
+  waterLevelSecondary: number;
   tds: number;
-  flowOk: boolean;
-  autoTracking: boolean;
-  pumpCutoff: boolean;
-  history: Array<{ time: number; solarVoltage: number; solarCurrent: number; energyGenerated: number }>;
+  pumpSpeed: number;
+  pumpActive: boolean;
+  valveServoAngle: number;
+  valveOpen: boolean;
+  statusLed: boolean;
+  online: boolean;
+}
+
+export interface Zone3BTelemetry {
+  waterTemperature: number;
+  waterPresent: boolean;
+  alertLed: boolean;
+  buzzerActive: boolean;
+  online: boolean;
 }
 
 export interface SystemStatus {
@@ -46,132 +66,179 @@ export interface SystemStatus {
   lagMs: number;
   activeAlerts: number;
   lastUpdated: number;
+  zone1aOnline: boolean;
+  zone1bOnline: boolean;
+  zone2aOnline: boolean;
+  zone2bOnline: boolean;
+  zone3aOnline: boolean;
+  zone3bOnline: boolean;
 }
 
 export interface DashboardTelemetry {
-  zone1: Zone1Telemetry;
-  zone2: Zone2Telemetry;
-  zone3: Zone3Telemetry;
+  zone1a: Zone1ATelemetry;
+  zone1b: Zone1BTelemetry;
+  zone2a: Zone2ATelemetry;
+  zone2b: Zone2BTelemetry;
+  zone3a: Zone3ATelemetry;
+  zone3b: Zone3BTelemetry;
   system: SystemStatus;
 }
 
 const now = Date.now();
 
 export const initialMockTelemetry: DashboardTelemetry = {
-  zone1: {
-    soil: 43,
+  zone1a: {
     temperature: 27,
     humidity: 62,
-    canopyOpen: false,
-    rainDetected: false,
-    pumpOn: false,
-    history: Array.from({ length: 10 }).map((_, index) => ({
-      time: now - (9 - index) * 180000,
-      soil: 40 + index * 2,
-      temperature: 24 + index * 0.5,
-      humidity: 55 + index,
-    })),
+    soilMoisture: 45,
+    pumpSpeed: 0,
+    pumpActive: false,
+    redAlert: false,
+    greenIdleActive: true,
+    blueIrrigationActive: false,
+    online: true,
   },
-  zone2: {
-    waterLevel: 32,
-    feedWeight: 28,
+  zone1b: {
+    touchDetected: false,
+    pirMotionDetected: false,
+    rainLevel: 0,
+    roofServoAngle: 0,
+    roofOpen: false,
+    online: true,
+  },
+  zone2a: {
     temperature: 24,
     humidity: 58,
-    lux: 720,
-    servoAngle: 90,
-    fanSpeed: 45,
-    lightsOn: true,
-    attendance: [
-      { uid: 'RFID-540A', ts: now - 360000 },
-      { uid: 'RFID-8F21', ts: now - 540000 },
-      { uid: 'RFID-2C73', ts: now - 900000 },
-    ],
-    history: Array.from({ length: 10 }).map((_, index) => ({
-      time: now - (9 - index) * 180000,
-      waterLevel: 28 + index * 0.8,
-      feedWeight: 24 + index * 0.9,
-      temperature: 22 + index * 0.3,
-      humidity: 52 + index * 0.7,
-    })),
+    rfidScans: [{ uid: 'RFID-001', ts: now - 3600000 }],
+    buzzerActive: false,
+    led1Alert: false,
+    led2Alert: false,
+    rtcTime: new Date().toLocaleTimeString(),
+    online: true,
   },
-  zone3: {
-    solarVoltage: 32.4,
-    solarCurrent: 4.8,
-    energyGenerated: 12.8,
+  zone2b: {
+    waterTroughLevel: 32,
+    feedWeight: 28,
+    lux: 720,
+    fanSpeed: 45,
+    autoLightingActive: true,
+    feedServoAngle: 45,
+    feedDispensed: false,
+    online: true,
+  },
+  zone3a: {
+    waterLevel: 65,
+    waterLevelSecondary: 60,
     tds: 110,
-    flowOk: true,
-    autoTracking: true,
-    pumpCutoff: false,
-    history: Array.from({ length: 10 }).map((_, index) => ({
-      time: now - (9 - index) * 180000,
-      solarVoltage: 28.5 + index * 0.35,
-      solarCurrent: 3.6 + index * 0.14,
-      energyGenerated: 9.2 + index * 0.45,
-    })),
+    pumpSpeed: 0,
+    pumpActive: false,
+    valveServoAngle: 0,
+    valveOpen: false,
+    statusLed: false,
+    online: true,
+  },
+  zone3b: {
+    waterTemperature: 22,
+    waterPresent: true,
+    alertLed: false,
+    buzzerActive: false,
+    online: true,
   },
   system: {
     gatewayOnline: true,
     lagMs: 120,
     activeAlerts: 0,
     lastUpdated: now,
+    zone1aOnline: true,
+    zone1bOnline: true,
+    zone2aOnline: true,
+    zone2bOnline: true,
+    zone3aOnline: true,
+    zone3bOnline: true,
   },
 };
 
 export function createMockTelemetry(previous: DashboardTelemetry): DashboardTelemetry {
-  const nextSoil = Math.max(18, Math.min(78, previous.zone1.soil + (Math.random() * 6 - 3)));
-  const nextTemp1 = Math.max(18, Math.min(36, previous.zone1.temperature + (Math.random() * 2 - 1)));
-  const nextHum1 = Math.max(35, Math.min(78, previous.zone1.humidity + (Math.random() * 2.5 - 1.2)));
-  const nextWater = Math.max(12, Math.min(45, previous.zone2.waterLevel + (Math.random() * 2 - 1)));
-  const nextFeed = Math.max(10, Math.min(58, previous.zone2.feedWeight + (Math.random() * 1.2 - 0.6)));
-  const nextTemp2 = Math.max(18, Math.min(34, previous.zone2.temperature + (Math.random() * 2 - 1)));
-  const nextHum2 = Math.max(38, Math.min(78, previous.zone2.humidity + (Math.random() * 2.5 - 1.2)));
-  const nextVolt = Math.max(21, Math.min(37, previous.zone3.solarVoltage + (Math.random() * 0.8 - 0.4)));
-  const nextAmp = Math.max(2.8, Math.min(6.6, previous.zone3.solarCurrent + (Math.random() * 0.3 - 0.15)));
-  const nextEnergy = Math.max(8, Math.min(18, previous.zone3.energyGenerated + (Math.random() * 0.5 - 0.15)));
+  const nextMoisture = Math.max(20, Math.min(80, previous.zone1a.soilMoisture + (Math.random() * 4 - 2)));
+  const nextTemp1a = Math.max(18, Math.min(40, previous.zone1a.temperature + (Math.random() * 1 - 0.5)));
+  const nextHum1a = Math.max(35, Math.min(90, previous.zone1a.humidity + (Math.random() * 2 - 1)));
+  const nextRainLevel = Math.max(0, Math.min(100, previous.zone1b.rainLevel + (Math.random() * 10 - 5)));
+
+  const nextTemp2a = Math.max(18, Math.min(34, previous.zone2a.temperature + (Math.random() * 1 - 0.5)));
+  const nextHum2a = Math.max(35, Math.min(90, previous.zone2a.humidity + (Math.random() * 2 - 1)));
+  const nextWaterTrough = Math.max(10, Math.min(50, previous.zone2b.waterTroughLevel + (Math.random() * 2 - 1)));
+  const nextFeedWeight = Math.max(5, Math.min(60, previous.zone2b.feedWeight + (Math.random() * 1 - 0.5)));
+  const nextLux = Math.max(100, Math.min(1000, previous.zone2b.lux + (Math.random() * 40 - 20)));
+
+  const nextWaterLevel = Math.max(20, Math.min(100, previous.zone3a.waterLevel + (Math.random() * 2 - 1)));
+  const nextWaterLevel2 = Math.max(15, Math.min(95, previous.zone3a.waterLevelSecondary + (Math.random() * 2 - 1)));
+  const nextTds = Math.max(80, Math.min(150, previous.zone3a.tds + (Math.random() * 4 - 2)));
+  const nextWaterTemp = Math.max(15, Math.min(35, previous.zone3b.waterTemperature + (Math.random() * 1 - 0.5)));
+  const nextWaterPresent = Math.random() > 0.05;
+
+  // Auto-control thresholds
+  const shouldActivatePump1a = nextMoisture < 30;
+  const shouldOpenRoof = nextRainLevel > 70;
+  const shouldActivateFan = nextTemp2a > 28;
+  const shouldAutoLight = nextLux < 300;
+  const shouldActivateWaterPump = nextWaterLevel < 40;
+  const shouldOpenValve = shouldActivateWaterPump;
+  const shouldAlertTds = nextTds > 130;
+  const shouldAlert = shouldAlertTds || nextWaterLevel < 30 || !nextWaterPresent;
 
   return {
-    zone1: {
-      ...previous.zone1,
-      soil: Number(nextSoil.toFixed(0)),
-      temperature: Number(nextTemp1.toFixed(1)),
-      humidity: Number(nextHum1.toFixed(0)),
-      history: [
-        ...previous.zone1.history.slice(1),
-        { time: Date.now(), soil: Number(nextSoil.toFixed(0)), temperature: Number(nextTemp1.toFixed(1)), humidity: Number(nextHum1.toFixed(0)) },
-      ],
+    zone1a: {
+      ...previous.zone1a,
+      temperature: Number(nextTemp1a.toFixed(1)),
+      humidity: Number(nextHum1a.toFixed(0)),
+      soilMoisture: Number(nextMoisture.toFixed(0)),
+      pumpActive: shouldActivatePump1a,
+      pumpSpeed: shouldActivatePump1a ? 80 : 0,
+      redAlert: shouldActivatePump1a,
+      greenIdleActive: !shouldActivatePump1a,
+      blueIrrigationActive: shouldActivatePump1a,
     },
-    zone2: {
-      ...previous.zone2,
-      waterLevel: Number(nextWater.toFixed(0)),
-      feedWeight: Number(nextFeed.toFixed(1)),
-      temperature: Number(nextTemp2.toFixed(1)),
-      humidity: Number(nextHum2.toFixed(0)),
-      lux: Math.max(320, Math.min(980, previous.zone2.lux + (Math.random() * 40 - 20))),
-      attendance: [
-        ...previous.zone2.attendance.slice(-4),
-        { uid: `RFID-${Math.floor(1000 + Math.random() * 9000)}`, ts: Date.now() },
-      ],
-      history: [
-        ...previous.zone2.history.slice(1),
-        { time: Date.now(), waterLevel: Number(nextWater.toFixed(0)), feedWeight: Number(nextFeed.toFixed(1)), temperature: Number(nextTemp2.toFixed(1)), humidity: Number(nextHum2.toFixed(0)) },
-      ],
+    zone1b: {
+      ...previous.zone1b,
+      rainLevel: Number(nextRainLevel.toFixed(0)),
+      roofOpen: !shouldOpenRoof,
+      roofServoAngle: shouldOpenRoof ? 90 : 0,
     },
-    zone3: {
-      ...previous.zone3,
-      solarVoltage: Number(nextVolt.toFixed(1)),
-      solarCurrent: Number(nextAmp.toFixed(1)),
-      energyGenerated: Number(nextEnergy.toFixed(1)),
-      tds: Math.max(95, Math.min(145, previous.zone3.tds + (Math.random() * 4 - 2))),
-      flowOk: Math.random() > 0.06,
-      history: [
-        ...previous.zone3.history.slice(1),
-        { time: Date.now(), solarVoltage: Number(nextVolt.toFixed(1)), solarCurrent: Number(nextAmp.toFixed(1)), energyGenerated: Number(nextEnergy.toFixed(1)) },
-      ],
+    zone2a: {
+      ...previous.zone2a,
+      temperature: Number(nextTemp2a.toFixed(1)),
+      humidity: Number(nextHum2a.toFixed(0)),
+      rtcTime: new Date().toLocaleTimeString(),
+    },
+    zone2b: {
+      ...previous.zone2b,
+      waterTroughLevel: Number(nextWaterTrough.toFixed(0)),
+      feedWeight: Number(nextFeedWeight.toFixed(1)),
+      lux: Number(nextLux.toFixed(0)),
+      fanSpeed: shouldActivateFan ? 75 : 30,
+      autoLightingActive: shouldAutoLight,
+    },
+    zone3a: {
+      ...previous.zone3a,
+      waterLevel: Number(nextWaterLevel.toFixed(0)),
+      waterLevelSecondary: Number(nextWaterLevel2.toFixed(0)),
+      tds: Number(nextTds.toFixed(0)),
+      pumpActive: shouldActivateWaterPump,
+      pumpSpeed: shouldActivateWaterPump ? 90 : 0,
+      valveOpen: shouldOpenValve,
+      valveServoAngle: shouldOpenValve ? 90 : 0,
+      statusLed: shouldActivateWaterPump || shouldAlertTds,
+    },
+    zone3b: {
+      ...previous.zone3b,
+      waterTemperature: Number(nextWaterTemp.toFixed(1)),
+      waterPresent: nextWaterPresent,
+      alertLed: shouldAlert,
+      buzzerActive: shouldAlert,
     },
     system: {
-      gatewayOnline: Math.random() > 0.08,
-      lagMs: Math.max(60, Math.min(260, previous.system.lagMs + Math.floor(Math.random() * 20 - 8))),
-      activeAlerts: Math.max(0, Math.min(3, previous.system.activeAlerts + (Math.random() > 0.7 ? 1 : -1))),
+      ...previous.system,
+      activeAlerts: (shouldActivatePump1a ? 1 : 0) + (shouldAlert ? 1 : 0),
       lastUpdated: Date.now(),
     },
   };

@@ -48,3 +48,20 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 3. Push your branch — Vercel will build and deploy automatically.
 
 If you want, I can initialize a local git repo here and create the initial commit; provide a remote URL (e.g. GitHub) and I can add it and push the branch for you.
+
+## Connecting ESP Master Nodes via ThingsBoard
+
+1. Create one ThingsBoard device per ESP master node.
+2. Configure each ESP to publish telemetry to ThingsBoard with clear keys, such as:
+   - zone1: `soil`, `temperature`, `humidity`, `canopy`, `pumpOn`, `rainDetected`
+   - zone2: `waterLevel`, `feedWeight`, `temperature`, `humidity`, `lux`, `servoAngle`, `fanSpeed`, `lightsOn`
+   - zone3: `solarVoltage`, `solarCurrent`, `energyGenerated`, `tds`, `flowOk`, `autoTracking`, `pumpCutoff`
+3. In the dashboard, enter the ThingsBoard device ID for each zone under `Zone 1 Device`, `Zone 2 Device`, and `Zone 3 Device`.
+4. Use the `Connect live` button to log in to ThingsBoard and subscribe to telemetry from those devices.
+5. Control actions are forwarded to the zone device via ThingsBoard RPC methods.
+
+### ThingsBoard best practice
+
+- Keep each ESP node as a separate device in ThingsBoard.
+- Use consistent telemetry keys for each zone so the dashboard can map values correctly.
+- Test device IDs and telemetry keys using the ThingsBoard device explorer before switching the dashboard to live mode.
