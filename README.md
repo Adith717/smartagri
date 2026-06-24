@@ -34,3 +34,17 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Project-specific deployment notes
+
+- Do NOT commit credentials. Use `.env.local` or your hosting provider's env settings.
+- Recommended env variables (see `.env.example`): `THINGSBOARD_HOST`, `THINGSBOARD_EMAIL`, `THINGSBOARD_PASSWORD`.
+- The app currently reads ThingsBoard config from runtime local storage; for production, wire those values to a secure secrets store or update the code to use server-side envs.
+
+### Deploying to Vercel
+
+1. Create a new project on Vercel and connect your Git repository.
+2. Set environment variables in the Vercel dashboard (do not commit secrets).
+3. Push your branch — Vercel will build and deploy automatically.
+
+If you want, I can initialize a local git repo here and create the initial commit; provide a remote URL (e.g. GitHub) and I can add it and push the branch for you.
